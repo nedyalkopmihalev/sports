@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
     libpng-dev \
@@ -25,4 +25,7 @@ RUN npm install && npm run build
 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-CMD ["php-fpm"]
+COPY vhost.conf /etc/apache2/sites-available/000-default.conf
+RUN echo "ServerName localhost:80" >> /etc/apache2/apache2.conf
+
+#CMD ["php-fpm"]
