@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel_sports_app
+    container_name: laravel_app
+    restart: unless-stopped
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:v3X10hE04ormS1S/u9h1/n4T4hcu9L9RB9bLF24/XhM=
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=sports_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=root_password
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel_network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: sports_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: laravel_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:
+
+volumes:
+  mysql_data:
