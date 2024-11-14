@@ -16,8 +16,8 @@ import router from './router/router';
 
 const app = createApp({});
 
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
+// import ExampleComponent from './components/ExampleComponent.vue';
+// app.component('example-component', ExampleComponent);
 
 import SportsComponent from './components/SportsComponent.vue';
 app.component('sports-component', SportsComponent);
@@ -41,3 +41,4 @@ app.component('sports-component', SportsComponent);
  */
 app.use(router);
 app.mount('#app');
+// createApp('SportsComponent').use(router).mount('#app');
