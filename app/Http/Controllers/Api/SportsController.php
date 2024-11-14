@@ -24,7 +24,9 @@ class SportsController extends Controller
         $data = [];
 
         if (!empty($sport)) {
-            $data['sport'] = self::SPORT_NAME;
+            $sportResult['id'] = $sport->id;
+            $sportResult['name'] = $sport->sport_name;
+            $data['sport'][] = $sportResult;
 
             $tournaments = $tournamentModel->getTournamentsBySportId($sport->id);
 
@@ -35,20 +37,21 @@ class SportsController extends Controller
                     if (!empty($seasons)) {
                         foreach ($seasons as $seasonItem) {
                             $matches = $matchesModel->getMatchesAndResultsBySeasonId($seasonItem->id);
+                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['tournament_id'] = $tournamentItem->id;
+                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['tournament_name'] = $tournamentItem->tournament_name;
+                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['id'] = $seasonItem->id;
+                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['name'] = $seasonItem->season_name;
 
                             if (!empty($matches)) {
                                 foreach ($matches as $matchItem) {
-                                    $data['tournament'][$tournamentItem->tournament_name]['season'][$seasonItem->season_name]['matches'][$matchItem->match_id][] = $matchItem->team_name;
-                                    $data['tournament'][$tournamentItem->tournament_name]['season'][$seasonItem->season_name]['matches'][$matchItem->match_id][] = $matchItem->score;
-                                    //$data['tournament'][$tournamentItem->tournament_name]['season'][$seasonItem->season_name]['match_id'][$matchItem->match_id]['score'][] = $matchItem->score;
+                                    $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['matches'][$matchItem->match_id]['team_name'][] = $matchItem->team_name;
+                                    $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['matches'][$matchItem->match_id]['score'][] = $matchItem->score;
                                 }
                             }
                         }
                     }
                 }
             }
-
-
         }
 
         return response()->json(['data' => $data]);

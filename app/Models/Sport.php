@@ -22,7 +22,7 @@ class Sport extends Model
     public function getSportByName(string $sportName = 'Football')
     {
         return DB::table($this->sportsTable)
-            ->select('id')
+            ->select('id', 'sport_name')
             ->where('sport_name', $sportName)
             ->first();
     }

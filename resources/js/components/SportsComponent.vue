@@ -11,6 +11,9 @@
             </thead>
             <tbody>
             <tr v-for="match in matches" :key="match.sport">
+                <td>{{ match.sport.name }}</td>
+            </tr>
+            <tr v-for="match in matches" :key="match.sport">
                 <td>{{ match.sport }}</td>
                 <!--<td v-for="result in match.results" :key="result.team.id">-->
                     <!--{{ result.team.name }} - {{ result.score }}-->
