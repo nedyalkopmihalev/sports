@@ -26,4 +26,16 @@ class Season extends Model
             ->where('season_name', $seasonName)
             ->first();
     }
+
+    /**
+     * @param int $tournamentId
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSeasonsByTournamentId(int $tournamentId)
+    {
+        return DB::table($this->seasonsTable)
+            ->select('id', 'season_name')
+            ->where('tournament_id', $tournamentId)
+            ->get();
+    }
 }

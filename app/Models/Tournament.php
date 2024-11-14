@@ -26,4 +26,16 @@ class Tournament extends Model
             ->where('tournament_name', $tournamentName)
             ->first();
     }
+
+    /**
+     * @param int $sportId
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTournamentsBySportId(int $sportId)
+    {
+        return DB::table($this->tournamentsTable)
+            ->select('id', 'tournament_name')
+            ->where('sport_id', $sportId)
+            ->get();
+    }
 }
