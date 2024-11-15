@@ -8,6 +8,7 @@ use App\Models\Sport;
 use App\Models\Tournament;
 use App\Models\Season;
 use App\Models\Matches;
+use App\Models\Result;
 
 class SportsController extends Controller
 {
@@ -19,35 +20,54 @@ class SportsController extends Controller
         $tournamentModel = new Tournament();
         $seasonModel = new Season();
         $matchesModel = new Matches();
+        $resultsModel = new Result();
         $sport = $sportModel->getSportByName();
 
         $data = [];
 
         if (!empty($sport)) {
-            $sportResult['id'] = $sport->id;
-            $sportResult['name'] = $sport->sport_name;
-            $data['sport'][] = $sportResult;
+            $data = [
+                'id' => $sport->id,
+                'name' => $sport->sport_name
+            ];
 
             $tournaments = $tournamentModel->getTournamentsBySportId($sport->id);
 
             if (!empty($tournaments)) {
                 foreach ($tournaments as $tournamentItem) {
                     $seasons = $seasonModel->getSeasonsByTournamentId($tournamentItem->id);
+                    $tournament = [
+                        'id' => $tournamentItem->id,
+                        'tournament_name' => $tournamentItem->tournament_name
+                    ];
 
                     if (!empty($seasons)) {
                         foreach ($seasons as $seasonItem) {
                             $matches = $matchesModel->getMatchesAndResultsBySeasonId($seasonItem->id);
-                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['tournament_id'] = $tournamentItem->id;
-                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['tournament_name'] = $tournamentItem->tournament_name;
-                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['id'] = $seasonItem->id;
-                            $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['name'] = $seasonItem->season_name;
+                            $matchesItems = [];
 
                             if (!empty($matches)) {
                                 foreach ($matches as $matchItem) {
-                                    $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['matches'][$matchItem->match_id]['team_name'][] = $matchItem->team_name;
-                                    $data['sport'][$sport->id]['tournament'][$tournamentItem->id]['season']['matches'][$matchItem->match_id]['score'][] = $matchItem->score;
+                                    $matchesItems[$matchItem->match_id][] = [
+                                        'team_name' => $matchItem->team_name,
+                                        'score' => $matchItem->score
+                                    ];
+
+
                                 }
                             }
+
+                            $season = [
+                                'season_id' => $seasonItem->id,
+                                'season_name' => $seasonItem->season_name,
+                                'matches' => $matchesItems
+                            ];
+
+                            $data['tournament'][] = [
+                                'tournament_id' => $tournamentItem->id,
+                                'tournament_name' => $tournamentItem->tournament_name,
+                                'season' => $season
+                            ];
                         }
                     }
                 }
